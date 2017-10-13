@@ -24,7 +24,7 @@ class Array2D<T> {
         
         // #3
         
-        array = Array<T?>(count:rows * columns, repeatedValue:nil)
+        array = Array<T?>(repeating:nil, count:rows * columns)
         
     }
     

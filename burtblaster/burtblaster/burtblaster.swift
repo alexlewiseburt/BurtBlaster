@@ -23,22 +23,22 @@ let LevelThreshold = 500
 protocol BurtBlasterDelegate {
     
     // Invoked when the current round of BurtBlaster ends
-    func gameDidEnd(burtBlaster: BurtBlaster)
+    func gameDidEnd(_ burtBlaster: BurtBlaster)
     
     // Invoked after a new game has begun
-    func gameDidBegin(burtBlaster: BurtBlaster)
+    func gameDidBegin(_ burtBlaster: BurtBlaster)
     
     // Invoked when the falling hape has become part of the game board
-    func gameShapeDidLand(burtBlaster: BurtBlaster)
+    func gameShapeDidLand(_ burtBlaster: BurtBlaster)
     
     // Invoked when the falling shape has changed its location
-    func gameShapeDidMove(burtBlaster: BurtBlaster)
+    func gameShapeDidMove(_ burtBlaster: BurtBlaster)
     
     // Invoked when the falling shape has changed its location after being dropped
-    func gameShapeDidDrop(burtBlaster: BurtBlaster)
+    func gameShapeDidDrop(_ burtBlaster: BurtBlaster)
     
     // Invoked when the game has reached a new level
-    func gameDidLevelUp(burtblaster: BurtBlaster)
+    func gameDidLevelUp(_ burtblaster: BurtBlaster)
 }
 
 class BurtBlaster {
@@ -213,7 +213,7 @@ class BurtBlaster {
     
     func removeCompletedLines() -> (linesRemoved: Array<Array<Block>>, fallenBlocks: Array<Array<Block>>) {
         var removedLines = Array<Array<Block>>()
-        for row in (1..<NumRows).reverse() {
+        for row in (1..<NumRows).reversed() {
             var rowOfBlocks = Array<Block>()
             
             // #11
@@ -252,7 +252,7 @@ class BurtBlaster {
             var fallenBlocksArray = Array<Block>()
             
             // #14
-            for row in (1..<removedLines [0][0].row).reverse() {
+            for row in (1..<removedLines [0][0].row).reversed() {
                 guard let block = blockArray[column, row] else {
                     continue
                 }

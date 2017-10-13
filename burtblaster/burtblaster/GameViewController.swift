@@ -27,14 +27,14 @@ class GameViewController: UIViewController, BurtBlasterDelegate, UIGestureRecogn
         
         let skView = view as! SKView
         
-        skView.multipleTouchEnabled = false
+        skView.isMultipleTouchEnabled = false
         
         
         // Create and configure the scene.
         
         scene = GameScene(size: skView.bounds.size)
         
-        scene.scaleMode = .AspectFill
+        scene.scaleMode = .aspectFill
         
         
         // #13
@@ -52,7 +52,7 @@ class GameViewController: UIViewController, BurtBlasterDelegate, UIGestureRecogn
         // #14
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden: Bool {
         return true
     }
     
@@ -68,7 +68,7 @@ class GameViewController: UIViewController, BurtBlasterDelegate, UIGestureRecogn
         // #2
         
         let currentPoint =
-        sender.translationInView(self.view)
+            sender.translation(in: self.view)
         if let originalPoint = panPointReference {
             
             // #3 
@@ -77,7 +77,7 @@ class GameViewController: UIViewController, BurtBlasterDelegate, UIGestureRecogn
                 (BlockSize * 0.9) {
                 
                 // #4
-                if sender.velocityInView(self.view).x >
+                if sender.velocity(in: self.view).x >
                     CGFloat (0) {
                     burtBlaster.moveShapeRight()
                     panPointReference = currentPoint
@@ -86,7 +86,7 @@ class GameViewController: UIViewController, BurtBlasterDelegate, UIGestureRecogn
                     panPointReference = currentPoint
                 }
             }
-        } else if sender.state == .Began {
+        } else if sender.state == .began {
             panPointReference = currentPoint
         }
     }
@@ -107,9 +107,7 @@ class GameViewController: UIViewController, BurtBlasterDelegate, UIGestureRecogn
     
     // #6 
     
-    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer,
-                           shouldBeRequiredToFailByGestureRecognizer
-        otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer is UISwipeGestureRecognizer {
             if otherGestureRecognizer is UIPanGestureRecognizer {
                 return true
@@ -136,12 +134,12 @@ class GameViewController: UIViewController, BurtBlasterDelegate, UIGestureRecogn
         self.scene.movePreviewShape(fallingShape) {
             
             // #16
-            self.view.userInteractionEnabled = true
+            self.view.isUserInteractionEnabled = true
             self.scene.startTicking()
         }
     }
     
-    func gameDidBegin(burtBlaster: BurtBlaster) {
+    func gameDidBegin(_ burtBlaster: BurtBlaster) {
         
         levelLabel.text = "\(burtBlaster.level)"
         scoreLabel.text = "\(burtBlaster.score)"
@@ -150,7 +148,7 @@ class GameViewController: UIViewController, BurtBlasterDelegate, UIGestureRecogn
         
         // The following is false when restarting a new game
         
-        if burtBlaster.nextShape != nil && burtBlaster.nextShape?.blocks[0].sprite == nil {
+        if burtBlaster.nextShape?.blocks[0].sprite == nil {
             scene.addPreviewShapeToScene(burtBlaster.nextShape!) {
                 self.nextShape()
             }
@@ -158,16 +156,16 @@ class GameViewController: UIViewController, BurtBlasterDelegate, UIGestureRecogn
             nextShape()
         }
     }
-    func gameDidEnd(burtBlaster: BurtBlaster) {
-        view.userInteractionEnabled = false
+    func gameDidEnd(_ burtblaster: BurtBlaster) {
+        view.isUserInteractionEnabled = false
         scene.stopTicking()
         scene.playSound("Sounds/gameover.mp3")
         scene.animateCollapsingLines(burtBlaster.removeAllBlocks(), fallenBlocks: burtBlaster.removeAllBlocks()) {
-            burtBlaster.beginGame()
+            self.burtBlaster.beginGame()
         }
     }
     
-    func gameDidLevelUp(burtblaster: BurtBlaster) {
+    func gameDidLevelUp(_ burtblaster: BurtBlaster) {
         levelLabel.text = "\(burtBlaster.level)"
         if scene.tickLengthMillis >= 100{
             scene.tickLengthMillis -= 100
@@ -177,20 +175,20 @@ class GameViewController: UIViewController, BurtBlasterDelegate, UIGestureRecogn
         scene.playSound("Sounds/levelup.mp3")
         
     }
-    func gameShapeDidDrop(burtBlaster: BurtBlaster) {
+    func gameShapeDidDrop(_ burtblaster: BurtBlaster) {
         
         // #7
         
         scene.stopTicking()
         scene.redrawShape(burtBlaster.fallingShape!) {
-            burtBlaster.letShapeFall()
+            self.burtBlaster.letShapeFall()
         }
         scene.playSound("Sounds/drop.mp3")
     }
     
-    func gameShapeDidLand(burtBlaster: BurtBlaster) {
+    func gameShapeDidLand(_ burtblaster: BurtBlaster) {
        scene.stopTicking()
-       self.view.userInteractionEnabled = false
+       self.view.isUserInteractionEnabled = false
         
         // #10 
         
@@ -201,7 +199,7 @@ class GameViewController: UIViewController, BurtBlasterDelegate, UIGestureRecogn
                 
                 // #11
             
-                self.gameShapeDidLand(burtBlaster)
+                self.gameShapeDidLand(self.burtBlaster)
             }
             scene.playSound("Sounds/bomb.mp3")
         } else {
@@ -211,7 +209,7 @@ class GameViewController: UIViewController, BurtBlasterDelegate, UIGestureRecogn
     
     // #17
     
-    func gameShapeDidMove(burtBlaster: BurtBlaster) {
+    func gameShapeDidMove(_ burtblaster: BurtBlaster) {
         scene.redrawShape(burtBlaster.fallingShape!) {}
     }
 }
